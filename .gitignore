@@ -36,7 +36,7 @@ node_modules/.bin/
 # node.js
 #
 npm-debug.log
-node_modules/doctorstrange-updater/.git/*
+node_modules/
 .idea/
 .gradle/
 .moles/
