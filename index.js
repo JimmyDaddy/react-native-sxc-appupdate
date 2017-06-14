@@ -1,3 +1,16 @@
+/**
+ * @Author: jimmydaddy
+ * @Date:   2017-06-01 08:17:23
+ * @Email:  heyjimmygo@gmail.com
+ * @Filename: index.js
+ * @Last modified by:   jimmydaddy
+ * @Last modified time: 2017-06-14 05:38:58
+ * @License: GNU General Public License（GPL)
+ * @Copyright: ©2015-2017 www.songxiaocai.com 宋小菜 All Rights Reserved.
+ */
+
+
+
 'use strict';
 
 import {
@@ -107,17 +120,12 @@ class AppUpdate {
     const version = result.version;
     const trackViewUrl = result.trackViewUrl;
     if (version !== RNAppUpdate.versionName) {
-      if (remote.forceUpdate) {
-        if(this.options.forceUpdateApp) {
-          this.options.forceUpdateApp();
-        }
-        RNAppUpdate.installFromAppStore(trackViewUrl);
-      } else if (this.options.needUpdateApp) {
+      if (this.options.needUpdateApp) {
         this.options.needUpdateApp((isUpdate) => {
           if (isUpdate) {
             RNAppUpdate.installFromAppStore(trackViewUrl);
           }
-        });
+        }, result);
       }
     } else if(this.options.notNeedUpdateApp) {
       this.options.notNeedUpdateApp();
