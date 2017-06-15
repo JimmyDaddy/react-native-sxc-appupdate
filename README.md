@@ -1,5 +1,5 @@
 # React Native AppUpdate
-Update apk and update from app store in React Native. Based on [react-native-appupdate]('https://github.com/parryworld/react-native-appupdate')
+Update apk and update from app store in React Native. Based on  [react-native-appupdate](https://github.com/parryworld/react-native-appupdate)
 
 ## Installation
 ```bash
