@@ -1,5 +1,5 @@
 # React Native AppUpdate
-Update apk and update from app store in React Native.
+Update apk and update from app store in React Native. Based on [react-native-appupdate]('https://github.com/parryworld/react-native-appupdate')
 
 ## Installation
 ```bash
@@ -23,14 +23,22 @@ let appUpdate = new AppUpdate({
     enterpriseUrl: 'url',
     iosEnterpriseVersionUrl: 'url',
     needUpdateApp: (needUpdate, remoteData) => {
-        Alert.alert(
-          '有新版本啦,是否立即更新？',
-          remoteData.attention? remoteData.attention : '无特别说明',
-          [
-            {text: '取消', onPress: () => {}},
-            {text: '更新', onPress: () => needUpdate(true)}
-          ]
-        );
+      needUpdateApp: (needUpdate, remoteData) => {
+        let updateText = 'fix something';
+        if (remoteData.attention) {
+          updateText = remoteData.attention;
+        } else if (remoteData.releaseNotes) {
+          updateText = remoteData.releaseNotes;
+        }
+          Alert.alert(
+            'new version available',
+            updateText,
+            [
+              {text: 'cancle', onPress: () => {}},
+              {text: 'update', onPress: () => needUpdate(true)}
+            ]
+          );
+      },
     },
     forceUpdateApp: () => {
         console.log("Force update will start")
@@ -39,26 +47,16 @@ let appUpdate = new AppUpdate({
         console.log("App is up to date")
     },
     downloadApkStart: () => {
-        this.changeState({
-            showDownLoad: true
-        })
+        //TODO
     },
     downloadApkProgress: (progress) => {
-        this.changeState({
-            downloadProgress: progress,
-        })
+        //TODO
     },
     downloadApkEnd: () => {
-        console.log("End")
-        this.changeState({
-            showDownLoad: false
-        })
+        //TODO
     },
     onError: () => {
-        Alert.alert(
-          '下载出错',
-          '请检查您的网络设置',
-        );
+        //TODO
     },
 
 });
@@ -71,7 +69,9 @@ appUpdate.checkUpdate();
 {
   "versionName":"1.0.0",
   "apkUrl":"https://github.com/NewApp.apk",
-  "forceUpdate": false
+  "forceUpdate": false,
+  "versionCode": 12 // or appBuild: 12,
+  "attention": 'fix something horrible', // or releaseNotes: 'fix something horrible'
 }
 ```
 ## Third Library

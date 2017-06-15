@@ -4,7 +4,7 @@
  * @Email:  heyjimmygo@gmail.com
  * @Filename: index.js
  * @Last modified by:   jimmydaddy
- * @Last modified time: 2017-06-14 05:38:58
+ * @Last modified time: 2017-06-15 11:54:21
  * @License: GNU General Public License（GPL)
  * @Copyright: ©2015-2017 www.songxiaocai.com 宋小菜 All Rights Reserved.
  */
@@ -52,7 +52,8 @@ class AppUpdate {
   }
 
   getApkVersionSuccess(remote) {
-    if (RNAppUpdate.versionCode < remote.versionCode) {
+    let code = remote.versionCode || remote.appBuild;
+    if (RNAppUpdate.versionCode < code) {
       if (remote.forceUpdate) {
         if(this.options.forceUpdateApp) {
           this.options.forceUpdateApp();
@@ -156,7 +157,7 @@ class AppUpdate {
   }
 
   getEnterpriseVersionSuccess(remote){
-      var code = remote.appBuild;
+      var code = remote.appBuild || remote.versionCode;
       var updateUrl = remote.updateUrl? remote.updateUrl : this.options.enterpriseUrl;
       if(parseInt(code) > parseInt(RNAppUpdate.versionCode)){
           if (this.options.needUpdateApp) {
