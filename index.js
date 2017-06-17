@@ -4,7 +4,7 @@
  * @Email:  heyjimmygo@gmail.com
  * @Filename: index.js
  * @Last modified by:   jimmydaddy
- * @Last modified time: 2017-06-15 11:54:21
+ * @Last modified time: 2017-06-18 12:29:05
  * @License: GNU General Public License（GPL)
  * @Copyright: ©2015-2017 www.songxiaocai.com 宋小菜 All Rights Reserved.
  */
@@ -120,7 +120,7 @@ class AppUpdate {
     const result = data.results[0];
     const version = result.version;
     const trackViewUrl = result.trackViewUrl;
-    if (version !== RNAppUpdate.versionName) {
+    if (version > RNAppUpdate.versionName) {
       if (this.options.needUpdateApp) {
         this.options.needUpdateApp((isUpdate) => {
           if (isUpdate) {
