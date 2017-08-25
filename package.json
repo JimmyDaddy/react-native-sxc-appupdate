@@ -1,13 +1,14 @@
 {
   "name": "react-native-sxc-appupdate",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "app update",
   "main": "index.js",
   "peerDependencies": {
-    "react-native": ">=0.18.0"
+    "react-native": ">=0.40.0"
   },
   "dependencies": {
-    "react-native-fs": "2.0.1-rc.2"
+    "react-native-fs": "^2.5.1",
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {},
   "scripts": {
@@ -20,7 +21,7 @@
   "author": "jimmydaddy",
   "license": "ISC",
   "repository": {
-      "type": "git",
-      "url": "https://github.com/JimmyDaddy/react-native-sxc-appupdate.git"
+    "type": "git",
+    "url": "https://github.com/JimmyDaddy/react-native-sxc-appupdate.git"
   }
 }
