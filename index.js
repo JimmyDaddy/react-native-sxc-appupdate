@@ -175,6 +175,22 @@ class AppUpdate {
   openEnterpriseUrl () {
     Linking.openURL(this.options.enterpriseUrl)
   }
+
+  /**
+   * @description get updater
+   * @static
+   * @memberof AppUpdate
+   */
+  static getAppUpdater = (options) => {
+    if (!AppUpdate.instance) {
+      AppUpdate.instance = new AppUpdate(options)
+    } else {
+      if (options) {
+        AppUpdate.instance = new AppUpdate(options)
+      }
+    }
+    return AppUpdate.instance
+  }
 }
 
 export default AppUpdate

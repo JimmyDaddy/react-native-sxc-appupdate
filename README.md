@@ -16,7 +16,7 @@ react-native link react-native-fs
 import { Alert } from 'react-native';
 import AppUpdate from 'react-native-sxc-appupdate';
 
-let appUpdate = new AppUpdate({
+let appUpdate = AppUpdate.getAppUpdater({
     apkVersionUrl: 'url',
     iosAppId: '',
     enterprise: true,
