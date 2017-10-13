@@ -14,13 +14,22 @@
 import {
   NativeModules,
   Platform,
-  Linking
+  Linking,
+  NativeAppEventEmitter
 } from 'react-native'
 import 'whatwg-fetch'
 
 const RNAppUpdate = NativeModules.RNAppUpdate
 
-let jobId = -1
+let jobId = 0
+
+const getJobId = () => {
+  jobId += 1;
+  return jobId;
+}
+
+const normalizeFilePath = (path) => (path.startsWith('file://') ? path.slice(7) : path);
+
 
 /* global fetch */
 class AppUpdate {
@@ -40,7 +49,7 @@ class AppUpdate {
   }
 
   getApkVersion () {
-    if (jobId !== -1) {
+    if (jobId !== 0) {
       return
     }
     if (!this.options.apkVersionUrl) {
@@ -48,6 +57,47 @@ class AppUpdate {
       return
     }
     this.GET(this.options.apkVersionUrl, this.getApkVersionSuccess.bind(this), this.getVersionError.bind(this))
+  }
+
+  downloadFile(options) {
+    if (typeof options !== 'object') throw new Error('downloadFile: Invalid value for argument `options`');
+    if (typeof options.fromUrl !== 'string') throw new Error('downloadFile: Invalid value for property `fromUrl`');
+    if (typeof options.toFile !== 'string') throw new Error('downloadFile: Invalid value for property `toFile`');
+    if (options.headers && typeof options.headers !== 'object') throw new Error('downloadFile: Invalid value for property `headers`');
+    if (options.background && typeof options.background !== 'boolean') throw new Error('downloadFile: Invalid value for property `background`');
+    if (options.progressDivider && typeof options.progressDivider !== 'number') throw new Error('downloadFile: Invalid value for property `progressDivider`');
+    if (options.readTimeout && typeof options.readTimeout !== 'number') throw new Error('downloadFile: Invalid value for property `readTimeout`');
+    if (options.connectionTimeout && typeof options.connectionTimeout !== 'number') throw new Error('downloadFile: Invalid value for property `connectionTimeout`');
+
+    var jobId = getJobId();
+    var subscriptions = [];
+
+    if (options.begin) {
+      subscriptions.push(NativeAppEventEmitter.addListener('DownloadBegin-' + jobId, options.begin));
+    }
+
+    if (options.progress) {
+      subscriptions.push(NativeAppEventEmitter.addListener('DownloadProgress-' + jobId, options.progress));
+    }
+
+    var bridgeOptions = {
+      jobId: jobId,
+      fromUrl: options.fromUrl,
+      toFile: normalizeFilePath(options.toFile),
+      headers: options.headers || {},
+      background: !!options.background,
+      progressDivider: options.progressDivider || 0,
+      readTimeout: options.readTimeout || 15000,
+      connectionTimeout: options.connectionTimeout || 5000
+    };
+
+    return {
+      jobId,
+      promise: RNAppUpdate.downloadFile(bridgeOptions).then(res => {
+        subscriptions.forEach(sub => sub.remove());
+        return res;
+      })
+    };
   }
 
   getApkVersionSuccess (res) {
@@ -85,7 +135,7 @@ class AppUpdate {
     }
     const progressDivider = 1
     const downloadDestPath = `${RNAppUpdate.DocumentDirectoryPath}/NewApp.apk`
-    const ret = RNAppUpdate.downloadFile({
+    const ret = this.downloadFile({
       fromUrl: remote.apkUrl,
       toFile: downloadDestPath,
       begin,
