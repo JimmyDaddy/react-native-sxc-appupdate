@@ -17,7 +17,6 @@ import {
   Linking
 } from 'react-native'
 import 'whatwg-fetch'
-import RNFS from 'react-native-fs'
 
 const RNAppUpdate = NativeModules.RNAppUpdate
 
@@ -51,12 +50,17 @@ class AppUpdate {
     this.GET(this.options.apkVersionUrl, this.getApkVersionSuccess.bind(this), this.getVersionError.bind(this))
   }
 
-  getApkVersionSuccess (remote) {
+  getApkVersionSuccess (res) {
+    const { data } = res
+    let remote = res
+    if (data) {
+      remote = data
+    }
     let code = remote.versionCode || remote.appBuild
     if (RNAppUpdate.versionCode < code) {
       if (remote.forceUpdate) {
         if (this.options.forceUpdateApp) {
-          this.options.forceUpdateApp()
+          this.options.forceUpdateApp(remote)
         }
         this.downloadApk(remote)
       } else if (this.options.needUpdateApp) {
@@ -80,8 +84,8 @@ class AppUpdate {
       this.options.downloadApkStart && this.options.downloadApkStart()
     }
     const progressDivider = 1
-    const downloadDestPath = `${RNFS.DocumentDirectoryPath}/NewApp.apk`
-    const ret = RNFS.downloadFile({
+    const downloadDestPath = `${RNAppUpdate.DocumentDirectoryPath}/NewApp.apk`
+    const ret = RNAppUpdate.downloadFile({
       fromUrl: remote.apkUrl,
       toFile: downloadDestPath,
       begin,
